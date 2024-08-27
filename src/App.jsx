@@ -7,39 +7,55 @@ import { FaPlus } from "react-icons/fa";
 function App() {
   const [todo, setToDo] = useState([]);
   const [hiden, setHiden] = useState(false);
-  
 
   useEffect(() => {
     if (localStorage && localStorage.getItem("todo")) {
       var todo = JSON.parse(localStorage.getItem("todo"));
       setToDo(todo);
-      console.log(todo);
     }
   }, []);
 
   const onCloseFrom = () => {
-    setHiden(false)
-  }
+    setHiden(false);
+  };
 
   const onSubmit = (value) => {
-    
-     value.id = Id();
-     todo.push(value);
-     setToDo(todo);
-     localStorage.setItem("todo", JSON.stringify(todo))
-  }
+    value.id = Id();
+    if (value.name != "") {
+      const up = [...todo, value];
+      setToDo(up);
+      localStorage.setItem("todo", JSON.stringify(up));
+    }
+  };
 
-
-
-  const onHiden = hiden?
-  <TaskForm onCloseFrom={onCloseFrom} onSubmit={onSubmit} />
-  :"";
+  const onHiden = hiden ? (
+    <TaskForm onCloseFrom={onCloseFrom} onSubmit={onSubmit} />
+  ) : (
+    ""
+  );
 
   const onHidenForm = () => {
     setHiden(!hiden);
-  }
+  };
 
+  const onDelete = (id) => {
+    const value = todo.filter((todo) => todo.id !== id);
+    setToDo(value);
+    localStorage.setItem("todo", JSON.stringify(value));
+  };
 
+  const onChangeStatus = (id) => {
+    const upValue = todo.map((value) => {
+      if (id === value.id) {
+        return {...value, status: !value.status}
+      } else {
+        return value;
+      }
+    });
+    setToDo(upValue);
+    localStorage.setItem("todo", JSON.stringify(upValue));
+
+  };
 
   const generate = () => {
     var todo = [
@@ -67,8 +83,11 @@ function App() {
     localStorage.setItem("todo", JSON.stringify(todo));
   };
 
-  const id = () => Math.round((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  const Id = () => id() + "_"  + id() + id() + "_" + id() + id() + "_" + id(); 
+  const id = () =>
+    Math.round((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  const Id = () => id() + "_" + id() + id() + "_" + id() + id() + "_" + id();
   return (
     <div className="container">
       <div>
@@ -77,16 +96,19 @@ function App() {
         {/* -- End Tiêu Đề -- */}
         <hr />
         <div className="row">
-          <div className={hiden?"col-4":"col-0"}>
+          <div className={hiden ? "col-4" : "col-0"}>
             {/* Task Form */}
             {onHiden}
             {/* -- End Task Form -- */}
           </div>
 
-          <div className={hiden?"col-8":"col-12"}>
+          <div className={hiden ? "col-8" : "col-12"}>
             <div className="text-start">
               {/* Add work bt */}
-              <button className="btn btn-info mb-3" onClick={() => onHidenForm()}>
+              <button
+                className="btn btn-info mb-3"
+                onClick={() => onHidenForm()}
+              >
                 <FaPlus className="mb-1" /> Thêm Công Việc
               </button>
               <button
@@ -104,7 +126,11 @@ function App() {
             {/* -- End Search And Sort -- */}
 
             {/* Task List */}
-            <TaskList todo={todo}/>
+            <TaskList
+              todo={todo}
+              onDelete={onDelete}
+              onChangeStatus={onChangeStatus}
+            />
             {/* -- End Task List -- */}
           </div>
         </div>

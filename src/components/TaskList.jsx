@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const TaskList = ({ todo }) => {
+const TaskList = ({ todo, onDelete, onChangeStatus }) => {
   return (
     <div>
       <table className="table table-bordered mt-3">
@@ -59,8 +59,9 @@ const TaskList = ({ todo }) => {
                 <td>
                   <button
                     className={value.status ? "btn btn-info" : "btn btn-danger"}
+                    onClick={() => onChangeStatus(value.id)}
                   >
-                    {value.status ? "Active" : "hiden"}
+                    {value.status?"Active":"hiden"}
                   </button>
                 </td>
                 <td>
@@ -70,7 +71,7 @@ const TaskList = ({ todo }) => {
                   >
                     Sữa
                   </button>
-                  <button className="btn btn-danger">Xóa</button>
+                  <button className="btn btn-danger" onClick={() => onDelete(value.id)}>Xóa</button>
                 </td>
               </tr>
           ))}

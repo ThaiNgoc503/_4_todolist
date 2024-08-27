@@ -12,15 +12,14 @@ const TaskForm = (props) => {
   const onChangeName = (e) => {
     setName(e.target.value);
   };
+
   const onChangeStatus = (e) => {
     setStatus(e.target.value);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // console.log(name);
-    // console.log(status);
-    var state = {name: name, status: status === 'true' ? true : false};
+    var state = {name: name, status: status === 'true'?true:false};
     props.onSubmit(state)
   };
 
